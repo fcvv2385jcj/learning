@@ -30,12 +30,9 @@ class Network(object):
         return X
     
     def cost(self, z, y):
-#         num_samples = y.shape[1]
-#         cost = (np.square(y-z)).sum()/ (2 * m)
-        error = z - y
-        num_samples = error.shape[1]
-        cost = error * error
-        cost = np.sum(cost) / num_samples / 2
+        m = z.shape[1]
+        num_samples = y.shape[1]
+        cost = (np.square(y-z)).sum()/ (2 * m)
         return cost
 
     def gradient(self, x, y, z):
@@ -54,11 +51,11 @@ class Network(object):
         costs = []
         y = y.reshape(1,-1)
         for i in range(1, num_iterations + 1):
-            np.random.shuffle(x)
             z = self.linear_forward(x)
             cost = self.cost(z, y)
             dw, db = self.gradient(x, y, z)
-            self.updata(dw,db,learning_rate)
+            m = x.shape[0]
+            self.updata(dw,db,learning_rate)        
             # 每迭代100次输出一次cost
             if i % 100 == 0:
                 print("Cost after iteration {}: {}".format(i, np.squeeze(cost)))
